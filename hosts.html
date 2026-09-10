@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MicroLink · Hosts</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="Your facility already holds the power, the footprint, and the thermal demand. MicroLink brings the compute, returns the heat, and you share in the value.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0b09;--paper:#f5f3ee;--paper-alt:#edeae2;
+    --line:rgba(12,11,9,0.15);--line-soft:rgba(12,11,9,0.07);
+    --muted:rgba(12,11,9,0.54);--block:#d7d2c8;--heat:#d83c18;--navy:#0C1B2E;
+    --display:"Sora",sans-serif;--body:"Archivo",sans-serif;--gut:clamp(1.25rem,5vw,6rem);
+    --section:clamp(2.5rem,6vh,5rem);
+    --section-lg:clamp(3.5rem,8vh,6.5rem);
+    --head-gap:1.2rem;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:clamp(1rem,0.55vw + 0.9rem,1.13rem);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1320px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gut)}
+  .display{font-family:var(--display);font-weight:700;line-height:0.98;letter-spacing:-0.02em}
+  .kicker{font-weight:600;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted)}
+  .heat{color:var(--heat)}
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+  @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+  section{position:relative}
+  .band{padding-top:var(--section);padding-bottom:var(--section)}
+  .ix{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.4rem;border-top:1px solid var(--line);padding-top:1rem}
+  .ix .num{font-family:var(--display);font-weight:600;font-size:0.8rem}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:1.1rem var(--gut);background:rgba(245,243,238,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+  nav .brand{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-0.01em}
+  nav .menu{justify-self:center;display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:.4rem;background:none;border:0}
+  nav .menu span{width:26px;height:2px;background:var(--ink);display:block;border-radius:2px}
+  nav .contact{justify-self:end;text-decoration:none;color:var(--ink);font-weight:600;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase}
+
+  .overlay{position:fixed;inset:0;z-index:90;background:var(--navy);color:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:var(--gut);opacity:0;pointer-events:none;transition:opacity .35s ease}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .overlay a{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.4vw,4.6rem);color:var(--paper);text-decoration:none;line-height:1.2;letter-spacing:-0.02em;opacity:.92}
+  .overlay a:hover,.overlay a:focus{color:var(--heat)}
+  .overlay a span{font-family:var(--body);font-weight:600;font-size:0.7rem;letter-spacing:0.22em;vertical-align:super;opacity:.5;margin-left:.8rem}
+  .overlay .x{position:absolute;top:1.4rem;right:var(--gut);cursor:pointer;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;background:none;border:0;color:var(--paper);font-family:var(--body)}
+
+  /* HERO: split */
+  .hero{position:relative;height:clamp(504px,62.4vh,672px);min-height:504px;width:100%;overflow:hidden}
+  .hero .heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22.4%;transform:translateX(0%)}
+  .hero .glass{position:absolute;top:0;bottom:0;left:0;width:46%;background:rgba(245,243,238,0.38);backdrop-filter:blur(20px) saturate(1.1);-webkit-backdrop-filter:blur(20px) saturate(1.1);border-right:1px solid rgba(245,243,238,0.5);display:flex;flex-direction:column;justify-content:flex-end;padding:var(--gut);padding-bottom:calc(clamp(1.9rem,5.25vh,4.5rem) + 6rem)}
+  .hero .glass .kicker{margin-bottom:1.4rem;color:rgba(12,11,9,.6)}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(1.615rem,3.57vw,3.06rem);line-height:1.0;letter-spacing:-0.03em;max-width:14ch}
+  .hero .sub{margin-top:1.5rem;font-size:clamp(1rem,1.3vw,1.25rem);max-width:38ch}
+
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,5rem);align-items:start}
+  .lead{font-size:clamp(1.1rem,1.5vw,1.35rem)}
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,4vw,3.4rem)}
+  .col h3{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:.7rem 0 var(--head-gap);max-width:16ch}
+  .partnercols h3{font-size:1.22rem;white-space:nowrap;max-width:none}
+  .col p{font-size:0.98rem;color:var(--muted);max-width:34ch;margin-top:var(--head-gap)}
+  .col .cn{font-family:var(--display);font-weight:700;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--heat)}
+  h2.sect{font-size:clamp(2rem,5.2vw,4.4rem);max-width:18ch;margin-bottom:2.4rem}
+
+  /* thermal math: navy ledger */
+  .math{background:var(--navy);color:var(--paper);padding-top:4rem;padding-bottom:var(--section)}
+  .math .kicker{color:rgba(245,243,238,0.55)}
+  .math h2{font-size:clamp(1.6rem,3.4vw,2.8rem);max-width:34ch;margin-bottom:1.6rem}
+  .glance .g{display:flex;justify-content:space-between;gap:1.5rem;padding:.5rem 0;border-top:1px solid rgba(245,243,238,0.16);font-size:.95rem;align-items:baseline}
+  .glance .g span{color:rgba(245,243,238,0.6)}
+  .glance .g b{font-family:var(--display);font-weight:700;text-align:right;white-space:nowrap}
+  .math .twocol{align-items:flex-start}
+  .math .imgw{border:1px solid rgba(245,243,238,0.25);overflow:hidden;line-height:0;height:100%;position:relative;align-self:stretch}
+  .math .imgw img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .math .note{margin-top:1.4rem;font-size:.85rem;color:rgba(245,243,238,0.5);max-width:46ch}
+
+  .imgw{border:1px solid var(--line);overflow:hidden;line-height:0;background:var(--block)}
+  .imgw img{width:100%;height:auto;display:block}
+
+  /* steps */
+  .steps .step{display:grid;grid-template-columns:90px 1fr 1.2fr;gap:2rem;padding:1.3rem 0;border-top:1px solid var(--line);align-items:baseline}
+  .steps .n{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--heat)}
+  .steps h3{font-family:var(--display);font-weight:700;font-size:1.2rem}
+  .steps p{color:var(--muted);font-size:.98rem;max-width:52ch}
+
+  .btn{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;padding:1rem 2.2rem;border-radius:100px}
+  .btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--heat);outline-offset:3px}
+  .cta h2{font-size:clamp(2rem,6vw,5rem);max-width:18ch;margin-bottom:2.2rem}
+  #contact{background:var(--ink);color:var(--paper)}
+  #contact .ix{border-top-color:rgba(245,243,238,0.16)}
+  #contact .kicker{color:rgba(245,243,238,0.55)}
+  #contact h2{color:var(--paper)}
+  #contact .btn{background:var(--paper);color:var(--ink)}
+
+  footer{border-top:1px solid var(--line);padding:2.4rem var(--gut);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;font-size:.85rem;color:var(--muted)}
+  footer .links a{color:var(--ink);text-decoration:none;margin-right:1.6rem;font-weight:500}
+
+  @media(max-width:860px){
+    .hero .glass{width:100%;background:rgba(245,243,238,0.55)}
+    .twocol,.cols3{grid-template-columns:1fr}
+    .partnercols h3{white-space:normal}
+    .math .imgw{height:clamp(220px,38vh,320px)}
+    .steps .step{grid-template-columns:56px 1fr}
+    .steps .step p{grid-column:2}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">MicroLink</div>
+  <button class="menu" aria-label="Open menu" onclick="document.querySelector('.overlay').classList.add('open')"><span></span><span></span><span></span></button>
+  <a class="contact" href="#contact">Contact</a>
+</nav>
+
+<div class="overlay" role="dialog" aria-label="Site menu">
+  <button class="x" onclick="this.parentElement.classList.remove('open')">Close</button>
+  <a href="index.html">Home<span>01</span></a>
+  <a href="technology.html">Technology<span>02</span></a>
+  <a href="portfolio.html">Portfolio<span>03</span></a>
+  <a href="hosts.html">Hosts<span>04</span></a>
+  <a href="community.html">Community<span>05</span></a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="heroimg" src="assets/microlink-brewhouse-glasshouse.jpg" alt="a brewhouse behind glass at night, three stainless fermentation tanks on the left and a lit bar with bottles and seated drinkers on the right.">
+  <div class="glass">
+    <div class="kicker rv in">For hosts</div>
+    <h1 class="rv in">Your facility already does the hard part.</h1>
+    <p class="sub rv in d1">Interconnection, footprint, and year round thermal demand. We bring the compute, return the heat, and you share in the value.</p>
+  </div>
+</section>
+
+<!-- 01 -->
+<section class="band" style="padding-top:calc(var(--section)*0.08232);padding-bottom:calc(var(--section)*0.49)">
+  <div class="wrap">
+    <div class="ix rv" style="justify-content:flex-end;margin-bottom:0.432rem"><span class="num">01</span></div>
+    <div class="cols3 partnercols">
+      <div class="col rv d1">
+        <span class="cn">Displaced gas</span>
+        <h3>Heat that offsets your boilers</h3>
+        <p>Recovered heat feeds your hot water, digesters, or district loop and directly displaces purchased gas.</p>
+      </div>
+      <div class="col rv d2">
+        <span class="cn">Aligned economics</span>
+        <h3>Share in the value</h3>
+        <p>The site earns and you participate, on transparent cost plus terms for the life of the deployment.</p>
+      </div>
+      <div class="col rv d3">
+        <span class="cn">Zero burden</span>
+        <h3>MicroLink deploys capital</h3>
+        <p>Your team runs your plant, not ours. No capital outlay, no operating load, no new headcount.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 THE THERMAL MATH -->
+<section class="band math">
+  <div class="wrap">
+    <div class="kicker rv" style="margin-bottom:1.2rem">The thermal math · a representative 80 MW deployment</div>
+    <h2 class="display rv">What a deployment returns to its host.</h2>
+    <div class="twocol">
+      <div class="rv d1">
+        <div class="glance">
+          <div class="g"><span>Recoverable heat at the data center</span><b>68 MW thermal</b></div>
+          <div class="g"><span>Heat delivered to the host system</span><b>20 to 22 MW thermal</b></div>
+          <div class="g"><span>Natural gas displaced</span><b>660,000 Mcf/yr</b></div>
+          <div class="g"><span>Host gas cost avoided</span><b>$3.2M to $7.2M/yr</b></div>
+          <div class="g"><span>CO&#8322; avoided for the host</span><b>36,000 t/yr</b></div>
+          <div class="g"><span>Loop temperature delivered</span><b>40 to 65&deg;C (104 to 149&deg;F)</b></div>
+          <div class="g"><span>Heat source availability</span><b>24/7 constant</b></div>
+          <div class="g"><span>Cost to the host's ratepayers</span><b>none</b></div>
+        </div>
+        <p class="note">Dry coolers on the always open reject path are sized for the full load, so your offtake never constrains the compute and the compute never waits on your demand.</p>
+      </div>
+      <div class="imgw rv d2"><img src="assets/port-08.jpg" alt="Illustrated aerial view of a water treatment facility beside a river"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 HEAT, POWER, LEASE -->
+<section class="band" style="padding-top:calc(var(--section)*0.7)">
+  <div class="wrap">
+    <div class="ix rv"><span class="kicker">The model</span><span class="num">02</span></div>
+    <h2 class="display sect rv" style="max-width:14ch">Heat, power, lease.</h2>
+    <div class="cols3">
+      <div class="col rv d1">
+        <span class="cn">The differentiator</span>
+        <h3>Heat recovery</h3>
+        <p>Liquid cooling recovers heat at 40&deg;C to 65&deg;C (104&deg;F to 149&deg;F) and delivers it into your useful systems.</p>
+      </div>
+      <div class="col rv d2">
+        <span class="cn">The commercial engine</span>
+        <h3>Behind the meter</h3>
+        <p>Power secured below grid retail by sitting behind the meter, avoiding transmission, distribution, and capacity charges.</p>
+      </div>
+      <div class="col rv d3">
+        <span class="cn">The anchor</span>
+        <h3>Long term lease</h3>
+        <p>A long term facility lease anchors the deployment on your balance sheet terms, and you share in the value the site creates.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 PROCESS -->
+<section class="band">
+  <div class="wrap">
+    <div class="ix rv"><span class="kicker">From conversation to commissioning</span><span class="num">03</span></div>
+    <div class="steps">
+      <div class="step rv"><div class="n">1</div><h3>Site assessment</h3><p>Desktop review of your power, thermal demand profile, and footprint. Two weeks, no cost, no obligation.</p></div>
+      <div class="step rv"><div class="n">2</div><h3>Term sheet</h3><p>Heat price, value share, and footprint agreed in a short form document before any engineering spend.</p></div>
+      <div class="step rv"><div class="n">3</div><h3>Design and permits</h3><p>We carry the engineering and approvals. Your operations team reviews every interface drawing.</p></div>
+      <div class="step rv"><div class="n">4</div><h3>Build and commission</h3><p>Modular construction off your critical path. First heat delivered at energisation.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 THE ARCHITECTURE -->
+<section class="band">
+  <div class="wrap">
+    <div class="ix rv"><span class="kicker">The architecture</span><span class="num">04</span></div>
+    <div class="twocol" style="align-items:center">
+      <div>
+        <h2 class="display rv" style="font-size:clamp(1.5rem,3.2vw,2.6rem);line-height:1.14;max-width:22ch">Our Data Centers, like libraries, will add to our architectural histories.</h2>
+        <p class="lead rv d1" style="margin-top:1.4rem;max-width:46ch">We treat the building as permanent civic infrastructure, not a shed. Where a city invites us in, the design answers to its street, its skyline and its history.</p>
+      </div>
+      <div class="rv d1"><img src="assets/microlink-hosts-section-drawing.webp" alt="a scaled section drawing of a MicroLink deployment showing a north light sawtooth glasshouse over a concrete podium plant room, with a water basin, earth berm and finned dry cooler bank." style="width:100%;height:auto;display:block;aspect-ratio:2252/1105;object-fit:cover"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 CONTACT -->
+<section class="band cta" id="contact" style="padding-top:var(--section-lg);padding-bottom:var(--section-lg)">
+  <div class="wrap">
+    <div class="ix rv" style="margin-bottom:3.5rem"><span class="kicker">Start the assessment</span><span class="num">06</span></div>
+    <h2 class="display rv">If your facility buys heat,<br><span class="heat">we should talk</span>.</h2>
+    <a class="btn rv d1" href="mailto:info@microlinkdc.com" style="margin-top:2rem">Request a site assessment</a>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 MicroLink Data Centers</div>
+  <div class="links">
+    <a href="index.html">Home</a><a href="technology.html">Technology</a><a href="portfolio.html">Portfolio</a><a href="community.html">Community</a>
+  </div>
+</footer>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:0.18});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.querySelector('.overlay').classList.remove('open')}});
+</script>
+</body>
+</html>

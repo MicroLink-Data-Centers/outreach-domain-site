@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MicroLink · Technology</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0b09;--paper:#f5f3ee;--paper-alt:#edeae2;
+    --line:rgba(12,11,9,0.15);--line-soft:rgba(12,11,9,0.07);
+    --muted:rgba(12,11,9,0.54);--block:#d7d2c8;--heat:#d83c18;
+    --display:"Sora",sans-serif;--body:"Archivo",sans-serif;--gut:clamp(1.25rem,5vw,6rem);
+    --section:clamp(2.5rem,6vh,5rem);
+    --section-lg:clamp(3.5rem,8vh,6.5rem);
+    --head-gap:1.2rem;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:clamp(1rem,0.55vw + 0.9rem,1.13rem);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1320px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gut)}
+  .display{font-family:var(--display);font-weight:700;line-height:0.98;letter-spacing:-0.02em}
+  .kicker{font-family:var(--body);font-weight:600;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted)}
+  .heat{color:var(--heat)}
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:1.1rem var(--gut);background:rgba(245,243,238,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+  nav .brand{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-0.01em}
+  nav .menu{justify-self:center;display:flex;flex-direction:column;gap:5px;cursor:pointer}
+  nav .menu span{width:26px;height:2px;background:var(--ink);display:block;border-radius:2px}
+  nav .contact{justify-self:end;text-decoration:none;color:var(--ink);cursor:pointer;font-weight:600;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase}
+
+  .imgw{border:1px solid var(--line);overflow:hidden;line-height:0;background:var(--block)}
+  .imgw img{width:100%;height:auto;display:block}
+  /* scoped override for the Pod section image only (04 POD): full-bleed edge-to-edge, ratio-matched, no crop */
+  .imgw.podbleed{width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);aspect-ratio:2511/672;border-left:0;border-right:0}
+  .imgw.podbleed img{width:100%;height:100%;object-fit:cover;object-position:center}
+  /* scoped override for the PUE (07 metrics) heading image only: ratio-matched, no crop */
+  .imgw.procdiag{aspect-ratio:3168/1344}
+  .imgw.procdiag img{width:100%;height:100%;object-fit:cover;object-position:center}
+  .coverbox{position:relative;overflow:hidden;border:1px solid var(--line);width:100%;background:var(--block)}
+  .coverbox img{width:100%;height:100%;object-fit:cover;display:block}
+  .bleedband{width:100%;height:80vh;min-height:460px;overflow:hidden;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+  .bleedband img{width:100%;height:100%;object-fit:cover;display:block}
+  .edgebleed{width:100%;height:clamp(300px,46vh,560px);line-height:0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+  .edgebleed img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block}
+
+  .hero{position:relative;height:clamp(426px,58.36vh,695px);min-height:426px;width:100%;overflow:hidden}
+  .hero .heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%}
+  .hero .glass{position:absolute;top:0;bottom:0;left:0;width:46%;background:rgba(245,243,238,0.38);backdrop-filter:blur(20px) saturate(1.1);-webkit-backdrop-filter:blur(20px) saturate(1.1);border-right:1px solid rgba(245,243,238,0.5);display:flex;flex-direction:column;justify-content:flex-start;padding:var(--gut);padding-top:8vh;padding-bottom:clamp(1.9rem,5.25vh,4.5rem);padding-left:calc(0.8 * (var(--gut) + max(0px, (100vw - 1320px)/2)))}
+  .hero .glass .kicker{margin-top:3rem;margin-bottom:0.3rem;color:#fff}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(1.9rem,4.2vw,3.9rem);line-height:1.02;letter-spacing:-0.03em;max-width:14ch}
+  .hero .sub{margin-top:0.9rem;font-size:clamp(1rem,1.3vw,1.25rem);max-width:34ch;color:#fff}
+  .scrollcue{position:absolute;bottom:2rem;right:var(--gut);z-index:3;display:flex;align-items:center;gap:.7rem;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase}
+  .scrollcue .arr{font-size:1.5rem;animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+  section{position:relative}
+  .band{padding-top:var(--section);padding-bottom:var(--section)}
+  .ix{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.4rem}
+  .ix .num{font-family:var(--display);font-weight:600;font-size:0.8rem;letter-spacing:0.02em}
+
+  .thesis h2{font-size:clamp(2.1rem,5.6vw,4.8rem);max-width:18ch;margin-bottom:2.4rem}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,5rem);align-items:start}
+  .twocol p{max-width:44ch}
+  .lead{font-size:clamp(1.1rem,1.5vw,1.35rem)}
+  .bigstat{font-family:var(--display);font-weight:800;font-size:clamp(5rem,18vw,14rem);line-height:0.8;letter-spacing:-0.04em}
+  .bigstat .pct{font-size:0.42em;vertical-align:super}
+  .statcap{max-width:30ch;color:var(--muted)}
+  .chiprow{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(1.5rem,5vw,4rem);align-items:center;border-top:1px solid var(--line);padding-top:1.8rem;margin-top:2.4rem}
+  .chipart{line-height:0}
+  .chipart{display:flex;justify-content:center} .chipart img{width:78%;height:auto;display:block;margin-top:-2.2rem}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,5rem);align-items:center}
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,4vw,3.4rem)}
+  .col .cn{font-family:var(--display);font-weight:700;font-size:0.85rem;letter-spacing:0.04em;margin-bottom:.9rem;display:block}
+  .col h3{font-family:var(--display);font-weight:600;font-size:1.25rem;letter-spacing:-0.01em;margin-bottom:.7rem}
+  .col p{font-size:0.98rem;color:var(--muted);max-width:34ch}
+
+  .modelhead{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(1.5rem,5vw,5rem);align-items:end}
+  .modelhead h2{font-size:clamp(2.8rem,8.5vw,7rem);line-height:0.9}
+  .modelmeta{display:flex;flex-direction:column;gap:1.3rem;padding-bottom:.5rem}
+  .modelmeta .tagline{font-size:clamp(1.05rem,1.6vw,1.4rem);max-width:26ch}
+  .usecases{display:flex;flex-wrap:wrap;gap:.5rem}
+  .chip{border:1px solid var(--line);border-radius:100px;padding:.38rem 1rem;font-size:0.8rem}
+  .heatline{color:var(--muted);max-width:40ch}
+  .podgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem}
+  .campusgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,5rem);align-items:stretch}
+  /* Campus image slot: flex-grows to fill the left column so the elevation's bottom lands on the right aerial's bottom. */
+  .campus-img-slot{flex:1 1 auto;min-height:0;margin-top:1rem;background:#ede9dd}
+  .campus-img-slot img{width:100%;height:100%;object-fit:contain;object-position:bottom;display:block}
+
+  .transition .big{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.04;letter-spacing:-0.02em;max-width:22ch}
+  .transition .fam{display:flex;gap:2rem;flex-wrap:wrap;margin-top:var(--head-gap);font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,2.6vw,2.1rem);color:var(--muted)}
+  .transition .fam span:nth-child(odd){color:var(--ink)}
+
+  .loops{background:#0C1B2E;color:var(--paper)}
+  .loops .band{padding-top:var(--section-lg);padding-bottom:var(--section-lg)}
+  .loops .kicker{color:rgba(245,243,238,0.55)}
+  .loops h2{font-size:calc(min(100vw - 192px, 1128px) / 24 * 0.8);max-width:none;white-space:nowrap;line-height:1.0;text-align:center;margin-inline:auto;margin-bottom:var(--head-gap)}
+  .loops .body{max-width:50ch;color:rgba(245,243,238,0.82);margin-bottom:3rem}
+  /* Architecture: paragraph sits upper-right at the content margin beside the heading; diagram reflows up beneath. */
+  .loops .arch-head{display:block;text-align:center}
+  .loops .arch-head .body{max-width:none;margin-inline:auto;text-align:center;margin-bottom:0}
+  @media(max-width:860px){.loops .arch-head{grid-template-columns:1fr}.loops .arch-head .body{justify-self:start;max-width:50ch}.loops h2{white-space:normal;font-size:clamp(1.68rem,4.48vw,3.58rem);max-width:20ch}}
+  .diagram{width:100%;border:1px solid rgba(245,243,238,0.18)}
+  .loops .cols3{margin-top:3rem;border-top:1px solid rgba(245,243,238,0.16);padding-top:2.6rem}
+  .loops .col h3{color:var(--paper)}
+  .loops .col p{color:rgba(245,243,238,0.65);font-size:0.833rem}
+  .loops .col .cn{color:var(--paper)}
+  .loops .col.r .cn{color:var(--heat)}
+
+  .planband{background:var(--paper)} .planimg{mix-blend-mode:multiply}
+  .planimg{width:100%;height:auto;display:block}
+  .plancap{font-size:0.8rem;letter-spacing:0.04em;color:var(--muted)}
+
+  .metrics{background:var(--paper-alt)}
+  .metrics h2{font-size:clamp(1.52rem,4vw,3.2rem);max-width:18ch}
+  .metricgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,5rem);border-top:1px solid var(--line);padding-top:2.8rem;margin-top:2.8rem}
+  .metric .n{font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+  .metric .v{font-family:var(--display);font-weight:800;font-size:clamp(2.1rem,5.4vw,3.9rem);line-height:0.85;letter-spacing:-0.03em}
+  .metric p{margin-top:1rem;max-width:34ch;color:var(--muted)}
+
+  footer{background:var(--ink);color:var(--paper);padding-top:clamp(4rem,9vh,7rem);padding-bottom:2.4rem}
+  footer .cta{font-family:var(--display);font-weight:800;font-size:clamp(3rem,11vw,9rem);line-height:0.88;letter-spacing:-0.04em}
+  footer .cta a{color:var(--paper);text-decoration:none}
+  footer .frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2rem;margin-top:clamp(3rem,7vh,5rem);border-top:1px solid rgba(245,243,238,0.16);padding-top:2rem;font-size:0.82rem;color:rgba(245,243,238,0.6)}
+  footer .frow a{color:rgba(245,243,238,0.6);text-decoration:none}
+
+  @media(max-width:820px){
+    nav{grid-template-columns:1fr auto}
+    .hero .glass{width:100%;background:rgba(245,243,238,0.3)}
+    .twocol,.split,.cols3,.modelhead,.metricgrid,.podgrid,.campusgrid,.chiprow{grid-template-columns:1fr;gap:1.6rem}
+    .split .coverbox{order:-1}
+  }
+
+/* ---- transplanted process schematic (locked to blue SCADA palette) ---- */
+.ml-proc{
+  --accent:#6FD3FF; --ink:#EAF2FA; --ink-body:#B9CBDC; --ink-soft:#7C96B2;
+  --line:#1E3A5C; --line-soft:#18324F; --card:#102742; --card-soft:#0E2138;
+  --stream-cool:#3FC4F0; --stream-hot:#FF7A45; --pipe-idle:#2A476A;
+  --icon-idle:#CBDBEC; --icon-active:#EAF2FA; --icon-frame:#2A476A;
+  --dot-on:#57E08F; --dot-off:#3A5A7E; --reject-idle:#3A5A7E; --reject-active:#FF8A4C;
+  --schem-bg:#0A1828;
+  background:#0C1B2E; color:var(--ink-body);
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+.ml-proc .mono{font-family:"JetBrains Mono",ui-monospace,monospace;}
+.ml-proc .schem-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.ml-proc .btn{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;background:var(--card);border:1px solid var(--line);color:var(--ink-body);border-radius:8px;padding:9px 14px;cursor:pointer;transition:background .2s,border-color .2s,color .2s;}
+.ml-proc .btn:hover{border-color:var(--accent);color:var(--ink);}
+.ml-proc .btn.is-on{background:var(--accent);border-color:var(--accent);color:#0C1B2E;}
+.ml-proc .spacer{flex:1 1 auto;}
+.ml-proc .glabel{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-right:4px;}
+.ml-proc .pill{display:inline-flex;align-items:center;gap:7px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.04em;background:var(--card);border:1px solid var(--line);border-radius:100px;padding:6px 12px;color:var(--ink-soft);}
+.ml-proc .pill .pdot{width:8px;height:8px;border-radius:50%;background:var(--dot-off);transition:background .25s;}
+.ml-proc .pill.on .pdot{background:var(--reject-active);}
+.ml-proc .pill.on{color:var(--ink);}
+.ml-proc .schem-frame{background:var(--schem-bg);border:1px solid var(--line);border-radius:12px;padding:10px;overflow-x:auto;}
+.ml-proc .schem-frame svg{display:block;min-width:1120px;width:100%;height:auto;}
+.ml-proc .pipe{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;}
+.ml-proc .pipe.cool{stroke:var(--stream-cool);} .ml-proc .pipe.hot{stroke:var(--stream-hot);}
+.ml-proc .pipe.reject{stroke:var(--reject-idle);transition:stroke .3s;}
+.ml-proc .pipe.reject.is-active{stroke:var(--reject-active);}
+.ml-proc .pipe.is-idle{stroke:var(--pipe-idle)!important;transition:stroke .3s;}
+.ml-proc .pipe.cool{filter:drop-shadow(0 0 4px rgba(63,196,240,.5));}
+.ml-proc .pipe.hot{filter:drop-shadow(0 0 4px rgba(255,122,69,.42));}
+.ml-proc .pipe.reject.is-active{filter:drop-shadow(0 0 4px rgba(255,138,76,.45));}
+.ml-proc .pipe.is-idle{filter:none;}
+.ml-proc .xbox{fill:none;stroke:var(--icon-idle);stroke-width:2;}
+.ml-proc .xdiam{fill:none;stroke:var(--icon-active);stroke-width:2;}
+.ml-proc .xarr{fill:none;stroke:var(--icon-active);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.ml-proc .node{color:var(--icon-idle);transition:color .25s;}
+.ml-proc .node.is-active{color:var(--icon-active);}
+.ml-proc .node.tappable{cursor:pointer;}
+.ml-proc .node.tappable:hover{color:var(--ink);}
+.ml-proc .icon-frame{fill:none;stroke:var(--icon-frame);stroke-width:1.5;}
+.ml-proc .svg-read{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;fill:var(--ink-body);transition:opacity .25s,fill .35s;}
+.ml-proc .svg-read.cool{fill:var(--stream-cool);} .ml-proc .svg-read.hot{fill:var(--stream-hot);}
+.ml-proc .svg-read.lbl{fill:var(--ink-soft);font-size:10px;letter-spacing:.08em;}
+.ml-proc .svg-read.is-inactive{opacity:.3;}
+.ml-proc .svg-dot.on{fill:var(--dot-on);} .ml-proc .svg-dot.off{fill:var(--dot-off);}
+.ml-proc .svg-state{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.06em;fill:var(--ink-soft);transition:fill .25s;}
+.ml-proc .svg-state.on{fill:var(--dot-on);}
+.ml-proc .loop-tag{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.1em;fill:var(--ink-soft);}
+.ml-proc .end-arrow{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;}
+.ml-proc .end-arrow.cool{stroke:var(--stream-cool);} .ml-proc .end-arrow.hot{stroke:var(--stream-hot);}
+.ml-proc .end-arrow.is-idle{stroke:var(--pipe-idle);}
+
+
+  .overlay{position:fixed;inset:0;z-index:90;background:#0C1B2E;color:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:var(--gut);opacity:0;pointer-events:none;transition:opacity .35s ease}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .overlay a{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.4vw,4.6rem);color:var(--paper);text-decoration:none;line-height:1.2;letter-spacing:-0.02em;opacity:.92}
+  .overlay a:hover,.overlay a:focus{color:#d83c18}
+  .overlay a span{font-family:var(--body);font-weight:600;font-size:0.7rem;letter-spacing:0.22em;vertical-align:super;opacity:.5;margin-left:.8rem}
+  .overlay .x{position:absolute;top:1.4rem;right:var(--gut);cursor:pointer;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;background:none;border:0;color:var(--paper);font-family:var(--body)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">MICROLINK&reg;</div>
+  <div class="menu" aria-label="menu"><span></span><span></span></div>
+  <a class="contact" href="mailto:info@microlinkdc.com">Contact</a>
+</nav>
+<div class="overlay" role="dialog" aria-label="Site menu">
+  <button class="x" onclick="this.parentElement.classList.remove('open')">Close</button>
+  <a href="index.html">Home<span>01</span></a>
+  <a href="technology.html">Technology<span>02</span></a>
+  <a href="portfolio.html">Portfolio<span>03</span></a>
+  <a href="hosts.html">Hosts<span>04</span></a>
+  <a href="community.html">Community<span>05</span></a>
+</div>
+
+
+<!-- HERO : night (nudged right to reveal logo) -->
+<header class="hero">
+  <img class="heroimg" src="assets/tech-hero-wastewater-digesters.jpg" alt="Aerial view of a MicroLink data center campus on the edge of Columbus.">
+  <div class="glass">
+    <div class="kicker rv in">MicroLink Technology</div>
+    <h1 class="display rv in d1">A new type<br>of data center<br>is coming</h1>
+    <p class="sub rv in d2">Compute that heats the world around it.</p>
+  </div>
+  <div class="scrollcue"><span>Scroll</span><span class="arr">&#8595;</span></div>
+</header>
+
+<!-- 02 LIQUID COOLING -->
+<section>
+  <div class="wrap band" style="padding-top:calc(var(--section) * 0.72);padding-bottom:var(--section)">
+    <div class="ix rv" style="margin-bottom:var(--head-gap)"><span class="num">02 / Liquid Cooling</span><span class="num">The opening</span></div>
+    <div class="twocol" style="align-items:start">
+      <h2 class="display rv" style="font-size:clamp(1.7rem,3.6vw,3rem);max-width:14ch;margin-bottom:var(--head-gap)">The industry is moving to liquid. That is the opening.</h2>
+      <p class="rv d1">Racks are outgrowing what air can cool, and air dumps low grade heat near 35&deg;C (95&deg;F) that nobody wants. Liquid pulls heat straight off the silicon, and captures it at 45 to 70&deg;C (113 to 158&deg;F), warm enough for so many things.</p>
+    </div>
+  </div>
+  <div class="edgebleed rv"><img src="assets/tech-banner-cabinet-park.jpg" alt="MicroLink unit beside a boiler in a plant room"></div>
+  <div class="wrap" style="padding-top:0.5rem;padding-bottom:clamp(2rem,5vh,3.5rem)">
+    <p class="plancap rv">MicroLink and Vertiv designed our Edge pod infrastructure together, 800 V DC capable and ready.</p>
+  </div>
+</section>
+
+<!-- TRANSITION -->
+<section class="transition">
+  <div class="wrap band" style="padding-top:clamp(1.5rem,3.6vh,2.4rem);padding-bottom:calc(var(--section)*0.6)">
+    <p class="big display rv">Chip makes <span class="heat">heat</span>. Liquid cooling makes that heat recoverable and high grade. Here is the <span class="heat">product</span> family that delivers it.</p>
+    <div class="fam rv d1"><span>Edge</span><span>/</span><span>Pod</span><span>/</span><span>Campus</span></div>
+  </div>
+</section>
+
+<!-- 03 EDGE (split) -->
+<section>
+  <div class="wrap band">
+    <div class="ix rv"><span class="num">03 / Edge</span><span class="num">Small heat loads</span></div>
+    <div class="split">
+      <div class="modelmeta rv">
+        <h2 class="display" style="font-size:clamp(2.6rem,7vw,5.5rem);line-height:.9">Edge</h2>
+        <div class="tagline">Small footprint. Placed where<br>the heat is needed.</div>
+        <div class="usecases"><span class="chip">Hotels</span><span class="chip">Low cost housing</span><span class="chip">Small manufacturing</span></div>
+        <p class="heatline">A hotel's hot water, an apartment block heating. Sitting quietly on a street or comfortably in a boiler room.</p>
+      </div>
+      <div class="coverbox rv d1" style="aspect-ratio:3/2"><img src="assets/tech-edge-unit.jpg" alt="MicroLink edge cabinet beside apartments"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 POD -->
+<section>
+  <div class="wrap band" style="padding-top:calc(var(--section)*0.6);padding-bottom:calc(var(--section)*0.6)">
+    <div class="ix rv"><span class="num">04 / Pod</span><span class="num">Up to 10 MW</span></div>
+    <div class="modelhead" style="align-items:start">
+      <div class="modelmeta rv" style="gap:1.4rem">
+        <h2 class="display" style="font-size:clamp(2.8rem,8.5vw,7rem);line-height:.9">Pod</h2>
+        <p class="heatline" style="max-width:50ch">Brewery process heat. Digester heating at a wastewater plant. A local public sector deployment. All receiving year round warmth.</p>
+      </div>
+      <div class="modelmeta rv d1">
+        <div class="tagline">Modular. Up to 10 MW. Medium heat for one partner.</div>
+        <div class="usecases"><span class="chip">Breweries</span><span class="chip">Wastewater treatment</span><span class="chip">Farming &amp; greenhouses</span><span class="chip">Public sector</span></div>
+      </div>
+    </div>
+    <figure class="imgw rv podbleed" style="margin-top:2.6rem"><img src="assets/microlink-pod-substation-dusk-r2.jpg" alt="a MicroLink pod lit from within at dusk, standing beside a wastewater treatment plant with digester tanks and a substation behind it."></figure>
+  </div>
+</section>
+
+<!-- 05 CAMPUS : square image right, text left/below -->
+<section>
+  <div class="wrap band" style="padding-bottom:var(--section)">
+    <div class="ix rv"><span class="num">05 / Campus</span><span class="num">At scale</span></div>
+    <div class="campusgrid">
+      <div class="modelmeta rv" style="gap:1.4rem">
+        <h2 class="display" style="font-size:clamp(2.8rem,8.5vw,7rem);line-height:.9">Campus</h2>
+        <div class="tagline">Mixed technology at scale. Power and heat recovery growing together.</div>
+        <div class="usecases"><span class="chip">District heating</span><span class="chip">Heavy industry</span><span class="chip">Anchor compute</span></div>
+        <p class="heatline">District heating networks and industrial demand that runs all year. The largest load we carry.</p>
+        <div class="campus-img-slot"><img src="assets/campus-elevation-2.png" alt="Elevation line drawing of a greenhouse, a plant building, and a data center hall."></div>
+      </div>
+      <figure class="imgw rv d1"><img src="assets/tech-07.jpg" alt="Aerial of a MicroLink campus with greenhouses"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- CAMPUS full bleed : Opening -->
+<div class="bleedband"><img src="assets/tech-campus-aerial-cropped.jpg" alt="MicroLink campus beside water"></div>
+
+<!-- 06 ARCHITECTURE -->
+<section class="loops">
+  <div class="wrap band">
+    <div class="ix rv"><span class="num">06 / Architecture</span><span class="num">Three loops</span></div>
+    <div class="arch-head">
+      <h2 class="display rv">Three loops. One of them is always open.</h2>
+      <p class="body rv d1">Three loops carry heat from the chip to where it is needed. The third one always has somewhere to go,<br>so the compute never waits and the partner is never the bottleneck.</p>
+    </div>
+
+    <div class="ml-proc">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+
+  <!-- WHAT: Pump (circulator). USE: forced circulation. STATES: idle/active by color.
+       BUILD: framed; centered circle + solid impeller triangle filling the bore + equal ports. -->
+  <symbol id="ic-pump" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="32" cy="32" r="13"/>
+      <path d="M28 25 L42 32 L28 39 Z" fill="currentColor" stroke="none"/>
+      <line x1="11" y1="32" x2="19" y2="32"/>
+      <line x1="45" y1="32" x2="53" y2="32"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Plate heat exchanger. USE: brazed-plate exchanger on a leg. STATES: idle/active by color.
+       BUILD: framed; square shell + three evenly spaced internal chevrons + equal ports. -->
+  <symbol id="ic-plate" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="22" y="18" width="20" height="28" rx="2"/>
+      <path d="M27 23 L37 28 L27 32 L37 36 L27 41"/>
+      <line x1="11" y1="32" x2="22" y2="32"/>
+      <line x1="42" y1="32" x2="53" y2="32"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Diamond crossing exchanger. USE: the crossing node, hot and cool trade heat.
+       STATES: idle/active by color. BUILD: framed; square + inscribed diamond + balanced counterflow arrows. -->
+  <symbol id="ic-diamond" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="18" y="18" width="28" height="28"/>
+      <path d="M32 18 L46 32 L32 46 L18 32 Z"/>
+      <path d="M26 37 L38 27"/>
+      <path d="M34 26 L38 27 L37 31"/>
+      <path d="M30 38 L26 37 L27 33"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Modulating valve, open. STATES: open(this)/closed(ic-valve-closed).
+       BUILD: framed; balanced bowtie + clear actuator bar on stem + equal ports. -->
+  <symbol id="ic-valve-open" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 26 L24 42 L40 26 L40 42 Z"/>
+      <line x1="32" y1="34" x2="32" y2="18"/>
+      <line x1="25" y1="18" x2="39" y2="18"/>
+      <line x1="11" y1="34" x2="24" y2="34"/>
+      <line x1="40" y1="34" x2="53" y2="34"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Modulating valve, closed. STATES: closed(this)/open(ic-valve-open).
+       BUILD: framed; bowtie + stem + closure bar across the seat. -->
+  <symbol id="ic-valve-closed" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 26 L24 42 L40 26 L40 42 Z"/>
+      <line x1="32" y1="34" x2="32" y2="18"/>
+      <line x1="25" y1="18" x2="39" y2="18"/>
+      <line x1="22" y1="48" x2="42" y2="48"/>
+      <line x1="11" y1="34" x2="24" y2="34"/>
+      <line x1="40" y1="34" x2="53" y2="34"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Non-return / check valve. USE: enforce one direction. STATES: idle/active by color.
+       BUILD: framed; large flow triangle into the seat bar + equal ports. -->
+  <symbol id="ic-check" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 22 L42 32 L24 42 Z" fill="currentColor" stroke="none"/>
+      <path d="M24 22 L42 32 L24 42 Z"/>
+      <line x1="44" y1="20" x2="44" y2="44"/>
+      <line x1="11" y1="32" x2="24" y2="32"/>
+      <line x1="44" y1="32" x2="53" y2="32"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Dry cooler / fan (reject path). USE: ambient rejection, always present.
+       STATES: idle/active by color. BUILD: framed; fan circle + three bold curved blades + hub. -->
+  <symbol id="ic-drycooler" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="32" cy="32" r="15"/>
+      <path d="M32 32 C32 23 28 20 23 20"/>
+      <path d="M32 32 C40 36 43 32 45 26"/>
+      <path d="M32 32 C28 41 32 44 38 45"/>
+      <circle cx="32" cy="32" r="2.6" fill="currentColor" stroke="none"/>
+    </g>
+  </symbol>
+
+  <!-- ===== CARRIED FORWARD (to be repaired in a later pass) ===== -->
+
+  <!-- WHAT: Filter / strainer. BUILD: framed Y-strainer body + diagonal screen mesh + port. -->
+  <symbol id="ic-filter" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 17 L41 17 L41 35 L32 49 L23 35 Z"/>
+      <path d="M25 27 L37 21"/><path d="M26 33 L39 26"/><path d="M29 39 L40 33"/>
+      <line x1="11" y1="20" x2="23" y2="20"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Buffer tank. BUILD: framed vertical cylinder + domed top + high/low side ports. -->
+  <symbol id="ic-buffer" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M25 18 C25 14 39 14 39 18 L39 48 L25 48 Z"/>
+      <path d="M25 18 L39 18"/>
+      <line x1="14" y1="24" x2="25" y2="24"/>
+      <line x1="39" y1="42" x2="50" y2="42"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Server rack. BUILD: framed open rack + thin unit dividers + status LED. -->
+  <symbol id="ic-rack" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="21" y="15" width="22" height="34" rx="2.5"/>
+      <line x1="21" y1="24" x2="43" y2="24"/>
+      <line x1="21" y1="32" x2="43" y2="32"/>
+      <line x1="21" y1="40" x2="43" y2="40"/>
+      <circle cx="38" cy="19.5" r="1.3" fill="currentColor" stroke="none"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Digester. BUILD: framed tank + domed top + central mixing shaft with low paddle. -->
+  <symbol id="ic-digester" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 25 L43 25 L43 48 L21 48 Z"/>
+      <path d="M21 25 C21 19 43 19 43 25"/>
+      <line x1="32" y1="15" x2="32" y2="42"/>
+      <line x1="27" y1="42" x2="37" y2="42"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Hotel boiler. BUILD: framed cylindrical vessel + flue stub + heating-element coil. -->
+  <symbol id="ic-boiler" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="21" y="19" width="22" height="29" rx="4"/>
+      <line x1="32" y1="13" x2="32" y2="19"/>
+      <path d="M26 29 C29 26 31 32 34 29 C36 27 38 30 38 30"/>
+      <path d="M26 36 C29 33 31 39 34 36 C36 34 38 37 38 37"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Sensor. BUILD: framed gauge dial + bold needle + scale ticks + short stem. -->
+  <symbol id="ic-sensor" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="32" cy="29" r="13"/>
+      <line x1="32" y1="29" x2="39" y2="22"/>
+      <circle cx="32" cy="29" r="2" fill="currentColor" stroke="none"/>
+      <line x1="32" y1="18" x2="32" y2="20.5"/>
+      <line x1="43" y1="29" x2="40.5" y2="29"/>
+      <line x1="21" y1="29" x2="23.5" y2="29"/>
+      <line x1="32" y1="42" x2="32" y2="50"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Flow meter. BUILD: framed body + turbine rotor + ports. -->
+  <symbol id="ic-flowmeter" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="22" y="23" width="20" height="18" rx="2.5"/><circle cx="32" cy="32" r="5.5"/>
+      <line x1="32" y1="26.5" x2="32" y2="37.5"/><line x1="26.5" y1="32" x2="37.5" y2="32"/>
+      <line x1="11" y1="32" x2="22" y2="32"/><line x1="42" y1="32" x2="53" y2="32"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Expansion vessel. BUILD: framed rounded vessel + diaphragm + connection. -->
+  <symbol id="ic-expansion" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 18 L41 18 L41 44 L23 44 Z"/><path d="M23 18 C23 14 41 14 41 18"/><path d="M23 44 C23 48 41 48 41 44"/>
+      <path d="M23 33 C28 29 36 37 41 33"/><line x1="32" y1="44" x2="32" y2="52"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Three-way diverter valve. BUILD: framed twin bowtie + three ports at a T. -->
+  <symbol id="ic-diverter" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 24 L24 40 L39 32 Z"/><path d="M40 24 L40 40 L25 32"/>
+      <line x1="11" y1="32" x2="24" y2="32"/><line x1="40" y1="32" x2="53" y2="32"/><line x1="32" y1="40" x2="32" y2="53"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Air separator. BUILD: framed body + rising bubbles + vent + ports. -->
+  <symbol id="ic-airsep" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="23" y="21" width="18" height="24" rx="5"/><line x1="32" y1="15" x2="32" y2="21"/>
+      <circle cx="29" cy="38" r="1.6"/><circle cx="34" cy="33" r="2"/><circle cx="31" cy="28" r="1.3"/>
+      <line x1="11" y1="40" x2="23" y2="40"/><line x1="41" y1="40" x2="53" y2="40"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Isolation ball valve. BUILD: framed body + ball + bore + lever + ports. -->
+  <symbol id="ic-ballvalve" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="32" cy="35" r="10"/><line x1="25" y1="35" x2="39" y2="35"/>
+      <line x1="32" y1="35" x2="32" y2="19"/><line x1="32" y1="19" x2="41" y2="19"/>
+      <line x1="11" y1="35" x2="22" y2="35"/><line x1="42" y1="35" x2="53" y2="35"/>
+    </g>
+  </symbol>
+
+  <!-- WHAT: Distribution manifold. BUILD: framed header + feed + branch drops. -->
+  <symbol id="ic-manifold" viewBox="0 0 64 64">
+    <rect class="icon-frame" x="6" y="6" width="52" height="52" rx="6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="16" y="24" width="32" height="9" rx="4"/><line x1="16" y1="28.5" x2="11" y2="28.5"/>
+      <line x1="24" y1="33" x2="24" y2="48"/><line x1="32" y1="33" x2="32" y2="48"/><line x1="40" y1="33" x2="40" y2="48"/>
+    </g>
+  </symbol>
+</svg>
+<div class="schem-controls">
+      <button class="btn is-on" id="mlBtn">MicroLink: On</button>
+      <button class="btn is-on" id="hostBtn">Host: On</button>
+      <div class="spacer"></div>
+      <span class="glabel">Cooler</span>
+      <span class="chip pill" id="rejectPill"><span class="pdot"></span><span id="rejectTxt">Idle</span></span>
+    </div>
+
+    <div class="schem-frame">
+      <svg id="schematic" viewBox="0 28 1200 410" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MicroLink counterflow schematic with two drafted crossings">
+
+        <text class="loop-tag" x="40" y="40">L1 SERVER LOOP</text>
+        <text class="loop-tag" x="1000" y="40">L3 HOST DELIVERY</text>
+
+        <!-- ===== PIPES (straight 45-degree drafting) =====
+             HOT path: starts top-left rail, diagonal down through A to middle
+             BOTTOM, runs along bottom to B, diagonal up through B to top-right.
+             COOL path: starts bottom-left rail, diagonal up through A to middle
+             TOP, runs along top to B, diagonal down through B to bottom-right.
+             A center 340, B center 860, D=90 -> A diag x 250..430, B diag 770..950. -->
+
+        <!-- THREE INDEPENDENT SEGMENTS, each a continuous path with FILLETED corners
+             (slight curve where a diagonal meets a horizontal, radius ~14). Diagonals
+             are drawn ONCE here (no separate overlay), so nothing protrudes past a
+             junction. A center 340, B center 860; box edges 296..384 / 816..904.
+             Diagonals rail-hit at center.x +-90 (A: 250/430, B: 770/950).
+
+             MicroLink segment (live when ML on): rack <-> A, including the A crossing.
+               Hot:  rack top -> fillet -> diagonal down through A -> fillet -> middle bottom.
+               Cool: middle top -> fillet -> diagonal up through A -> fillet -> rack bottom.
+             Bridge segment (live when ML on): middle spine A<->B, hot on bottom rail
+               (broken at pump ports 499/541 and cooler tap 600), cool on top rail.
+             Host segment (live when host on): B <-> host, including the B crossing. -->
+
+        <!-- MicroLink loop diagonals through crossing A (centre 460,240).
+             LEFT half (rack <-> A centre) is the MicroLink loop, live whenever ML runs:
+               hot rises rack-bottom-rail up to the diamond centre,
+               cool returns from the diamond centre down to rack-bottom-rail.
+             These two meet AT the diamond, so the loop closes cleanly at A.
+             RIGHT half (A centre -> middle rail) only lives when BOTH run, carrying
+             heat on into the middle bridge. -->
+        <!-- hot: rack top rail (136,150) -> fillet -> diagonal up to A centre (460,240) -->
+        <path id="p_ml_hot"  class="pipe hot"
+              d="M136 150 L346 150 Q360 150 369.9 159.9 L460 240"/>
+        <!-- hot middle stub: A centre (460,240) -> diagonal down -> middle bottom (564,330) -->
+        <path id="p_ml_hot_mid" class="pipe hot"
+              d="M460 240 L540.1 320.1 Q550 330 564 330"/>
+        <!-- cool: A centre (460,240) -> diagonal down to rack bottom rail (136,330) -> cooler -->
+        <path id="p_ml_cool" class="pipe cool"
+              d="M460 240 L369.9 320.1 Q360 330 346 330 L231 330"/>
+        <path id="p_ml_cool2" class="pipe cool" d="M189 330 L136 330"/>
+        <!-- cool middle stub: middle top (564,150) -> diagonal up -> A centre (460,240) -->
+        <path id="p_ml_cool_mid" class="pipe cool"
+              d="M564 150 Q550 150 540.1 159.9 L460 240"/>
+
+        <!-- Bridge hot, bottom rail (middle 564..636). -->
+        <path id="p_br_hot1" class="pipe hot"  d="M564 330 L636 330"/>
+        <!-- Bridge cool, top rail -->
+        <path id="p_br_cool" class="pipe cool" d="M636 150 L564 150"/>
+
+        <!-- Host loop diagonals through crossing B (centre 740,240).
+             RIGHT half (B centre <-> host) is the host loop, live whenever host runs:
+               hot rises from the diamond centre up to the host top rail,
+               cool returns from the host bottom rail down to the diamond centre.
+             These meet AT the diamond, so the loop closes cleanly at B.
+             LEFT half (middle rail -> B centre) only lives when BOTH run. -->
+        <!-- hot middle stub: middle bottom (636,330) -> diagonal up -> B centre (740,240) -->
+        <path id="p_host_hot_b_mid" class="pipe hot"
+              d="M636 330 Q650 330 659.9 320.1 L740 240"/>
+        <!-- hot: B centre (740,240) -> diagonal up to host top rail (844,150) -> vessel -->
+        <path id="p_host_hot_b"  class="pipe hot"
+              d="M740 240 L820.1 159.9 Q830 150 844 150"/>
+        <!-- cool: host bottom rail (844,330) -> diagonal up to B centre (740,240) -->
+        <path id="p_host_cool_b" class="pipe cool"
+              d="M844 330 Q830 330 820.1 320.1 L740 240"/>
+        <!-- cool middle stub: B centre (740,240) -> diagonal up -> middle top (636,150) -->
+        <path id="p_host_cool_b_mid" class="pipe cool"
+              d="M740 240 L659.9 159.9 Q650 150 636 150"/>
+        <!-- right-of-B host legs to the vessel -->
+        <path id="p_host_hot_a"  class="pipe hot"  d="M844 150 L1064 150"/>
+        <path id="p_host_cool_a" class="pipe cool" d="M1064 330 L844 330"/>
+
+        <!-- MicroLink cooler now sits INLINE on the cool return rail near the rack,
+             at the boxed point (x=210, y=330). p_reject is the rail-through span at
+             the cooler ports (189..231): it rejects (warm) when MicroLink runs and the
+             host is not taking heat; idle otherwise. The bottom hot rail is unbroken. -->
+        <path id="p_reject" class="pipe reject is-idle" d="M189 330 L231 330"/>
+
+        <!-- ===== END ARROWS ===== -->
+        <path class="end-arrow hot"  id="a_l1hot"  d="M120 150 l-12 -6 m12 6 l-12 6"/>
+        <path class="end-arrow cool" id="a_l1cool" d="M108 330 l12 -6 m-12 6 l12 6"/>
+        <path class="end-arrow hot"  id="a_l3hot"  d="M1092 150 l-12 -6 m12 6 l-12 6"/>
+        <path class="end-arrow cool" id="a_l3cool" d="M1080 330 l12 -6 m-12 6 l12 6"/>
+
+        <!-- ===== CROSSING A (square + smaller inscribed diamond + counterflow arrows) ===== -->
+        <g id="x_A">
+          <rect class="xbox"  x="416" y="196" width="88" height="88"/>
+          <path class="xdiam" d="M460 208 L492 240 L460 272 L428 240 Z"/>
+          <path class="xarr"  d="M449 248 L471 232"/>
+          <path class="xarr"  d="M465 230 L471 232 L470 238"/>
+          <path class="xarr"  d="M455 250 L449 248 L450 242"/>
+        </g>
+        <text class="svg-read lbl" x="460" y="312" text-anchor="middle">EXCH A</text>
+
+        <!-- ===== CROSSING B ===== -->
+        <g id="x_B">
+          <rect class="xbox"  x="696" y="196" width="88" height="88"/>
+          <path class="xdiam" d="M740 208 L772 240 L740 272 L708 240 Z"/>
+          <path class="xarr"  d="M729 248 L751 232"/>
+          <path class="xarr"  d="M745 230 L751 232 L750 238"/>
+          <path class="xarr"  d="M735 250 L729 248 L730 242"/>
+        </g>
+        <text class="svg-read lbl" x="740" y="312" text-anchor="middle">EXCH B</text>
+
+        <!-- ===== INLINE NODES ===== -->
+        <!-- Server rack far left, straddling both rails, lifted up to fit better -->
+        <g class="node is-active" id="n_rack" transform="translate(40,194)"><use href="#ic-rack" width="80" height="80"/></g>
+        <text class="svg-read lbl" x="80" y="288" text-anchor="middle">SERVER RACK</text>
+
+        <!-- MicroLink cooler sitting INLINE on the cool return rail at the boxed point
+             (x=210, y=330), near the rack. Rejects when MicroLink runs and host is not taking heat. -->
+        <g class="node tappable" id="n_dry" transform="translate(178,298)" tabindex="0"><use href="#ic-drycooler" width="64" height="64"/></g>
+        <text class="svg-read lbl" x="210" y="392" text-anchor="middle">MICROLINK COOLER</text>
+        <circle class="svg-dot off" id="r_dryDot" cx="160" cy="406" r="5"/>
+        <text class="svg-state" id="r_dryState" x="174" y="410">Cooler idle</text>
+
+        <!-- Host vessel far right, lifted up to fit better -->
+        <g class="node is-active tappable" id="n_host" transform="translate(1080,182)" tabindex="0"><use href="#ic-digester" width="88" height="88" id="hostUse"/></g>
+        <text class="svg-read lbl" x="1124" y="286" text-anchor="middle" id="hostLabel">DIGESTER</text>
+
+        <!-- ===== READOUTS (hot line y=106, cool line y=392, all four corners + middle aligned) ===== -->
+        <text class="svg-read hot is-active" id="r_l1hot" x="40" y="106">38 &#176;C (100 &#176;F)</text>
+        <text class="svg-read cool" id="r_l1cool" x="40" y="392">15.5 &#176;C (60 &#176;F)</text>
+        <text class="svg-read hot" id="r_l3supply" x="1160" y="106" text-anchor="end">65 &#176;C (149 &#176;F)</text>
+        <text class="svg-read cool" id="r_l3ret" x="1160" y="392" text-anchor="end">31 &#176;C (88 &#176;F)</text>
+
+        <!-- middle loop temps, aligned to the hot/cool readout lines (y=106 / y=392) -->
+        <text class="svg-read cool" id="r_midcool" x="600" y="106" text-anchor="middle">18 &#176;C (64 &#176;F)</text>
+        <text class="svg-read hot"  id="r_midhot"  x="600" y="392" text-anchor="middle">38 &#176;C (100 &#176;F)</text>
+
+        <!-- host hold -->
+        <text class="svg-read lbl" id="r_hostHold" x="1124" y="302" text-anchor="middle">HOLD 37 &#176;C (99 &#176;F)</text>
+      </svg>
+    </div>
+</div>
+
+    <div class="cols3">
+      <div class="col rv"><span class="cn">Loop 01</span><h3>Off the silicon</h3><p>Cold plates pull heat straight off the chip, at the density modern racks demand.</p></div>
+      <div class="col rv d1"><span class="cn">Loop 02</span><h3>Across the site</h3><p>The CDU moves that heat through to the facility heat exchangers, clean and contained.</p></div>
+      <div class="col r rv d2"><span class="cn">Loop 03</span><h3>To the partner</h3><p>Heat goes to the partner who needs it. When demand drops, the dry cooler rejects it instead.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 METRICS -->
+<section class="metrics">
+  <div class="wrap band">
+    <div class="ix rv"><span class="num">07 / The Number</span><span class="num">ERE</span></div>
+    <div class="split">
+      <h2 class="display rv">A good PUE means you waste less running the building. It says nothing about the heat.</h2>
+      <figure class="imgw rv procdiag"><img src="assets/microlink-tech-site-elevation.webp" alt="a scaled section elevation through a MicroLink deployment showing greenhouse, brewery, digester and plant room with dimensions in millimetres."></figure>
+    </div>
+    <div class="metricgrid">
+      <div class="metric rv">
+        <div class="n">Energy Reuse Effectiveness</div>
+        <div class="v heat">&lt; 1.0</div>
+        <p>ERE counts the energy we give back. Below 1.0, a site returns more usable energy than it loses. The number this company exists to move.</p>
+      </div>
+      <div class="metric rv d1">
+        <div class="n">Power Usage Effectiveness</div>
+        <div class="v">PUE</div>
+        <p>PUE measures overhead inside the fence. On its own it can read excellent while the heat goes to waste. We report both, together.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cta rv"><a href="mailto:info@microlinkdc.com">Become a <span class="heat">partner</span>.</a></div>
+    <div class="frow">
+      <div>MICROLINK&reg; &nbsp; Compute that heats the world around it.</div>
+      <div><a href="mailto:info@microlinkdc.com">Contact</a> &nbsp;&nbsp; <a href="#">Edge</a> &nbsp;&nbsp; <a href="#">Pod</a> &nbsp;&nbsp; <a href="#">Campus</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const state = { microlink:true, host:true };
+const $ = id => document.getElementById(id);
+function setSeg(id, live){ const el=$(id); if(el) el.classList.toggle('is-idle', !live); }
+function setState(){
+  const ml = state.microlink, host = state.host, both = ml && host;
+  const reject = ml && !host;           /* cooler rejects when ML runs, host not taking heat */
+
+  /* MicroLink segment: rack <-> A (diagonals folded into p_ml_*). Live when ML on.
+     When the host is off, the heat still circulates this loop and is dumped at the
+     inline cooler, so the whole MicroLink loop stays live whenever ML runs. */
+  setSeg('p_ml_hot', ml); setSeg('p_ml_cool', ml); setSeg('p_ml_cool2', ml);
+  setSeg('p_ml_hot_mid', both); setSeg('p_ml_cool_mid', both);
+  $('a_l1hot').classList.toggle('is-idle', !ml);
+  $('a_l1cool').classList.toggle('is-idle', !ml);
+  $('n_rack').classList.toggle('is-active', ml);
+
+  /* Bridge (middle) spine, A <-> B. Heat only traverses the middle when BOTH run:
+     MicroLink feeds heat in at A and the host takes it out at B. In MicroLink-only,
+     the loop circulates rack <-> A and rejects at the cooler, so the middle bridge
+     toward B stays idle (nothing crosses into the host side). */
+  setSeg('p_br_hot1', both);
+  setSeg('p_br_cool', both);
+
+  /* Host loop across B. The through-B diagonals and the right-of-B legs are ALL live
+     whenever the host runs: in host-only the host circulates its own complete loop
+     across crossing B (heat out to the digester, cool back), never reaching into the
+     MicroLink side. When both run this same loop continues from the middle bridge. */
+  setSeg('p_host_hot_b', host); setSeg('p_host_cool_b', host);
+  setSeg('p_host_hot_b_mid', both); setSeg('p_host_cool_b_mid', both);
+  setSeg('p_host_hot_a', host); setSeg('p_host_cool_a', host);
+  $('a_l3hot').classList.toggle('is-idle', !host);
+  $('a_l3cool').classList.toggle('is-idle', !host);
+  $('n_host').classList.toggle('is-active', host);
+
+  /* Crossing graphics: A keyed to ML, B keyed to host. */
+  $('x_A').style.opacity = ml ? '1' : '0.34';
+  $('x_B').style.opacity = host ? '1' : '0.34';
+
+  /* Inline cooler. The branch leg (p_reject) off the cool return rail rejects (warm,
+     active) when ML runs and the host is not taking heat; idle otherwise. */
+  $('p_reject').classList.remove('is-idle','is-active');
+  if (reject) $('p_reject').classList.add('is-active');
+  else $('p_reject').classList.add('is-idle');
+  $('n_dry').classList.toggle('is-active', reject);
+  $('r_dryDot').setAttribute('class','svg-dot '+(reject?'on':'off'));
+  $('r_dryState').textContent = reject?'Rejecting':'Cooler idle';
+  $('r_dryState').classList.toggle('on', reject);
+
+  /* Readouts. */
+  $('r_hostHold').classList.toggle('is-inactive', !host);
+  $('r_l3supply').classList.toggle('is-inactive', !both);
+  $('r_l3ret').classList.toggle('is-inactive', !host);
+  $('r_l1hot').classList.toggle('is-inactive', !ml);
+  $('r_midhot').classList.toggle('is-inactive', !both);
+  $('r_midcool').classList.toggle('is-inactive', !both);
+  $('r_midhot').textContent  = '38 \u00B0C (100 \u00B0F)';
+  $('r_midcool').textContent = '18 \u00B0C (64 \u00B0F)';
+  $('r_l3supply').textContent = both ? '65 \u00B0C (149 \u00B0F)' : '32 \u00B0C (90 \u00B0F)';
+
+  /* Controls. */
+  $('mlBtn').classList.toggle('is-on', ml); $('mlBtn').textContent='MicroLink: '+(ml?'On':'Off');
+  $('hostBtn').classList.toggle('is-on', host); $('hostBtn').textContent='Host: '+(host?'On':'Off');
+  const pill=$('rejectPill'); pill.classList.toggle('on', reject); $('rejectTxt').textContent = reject?'Rejecting':'Idle';
+}
+$('mlBtn').addEventListener('click', ()=>{ state.microlink=!state.microlink; setState(); });
+$('hostBtn').addEventListener('click', ()=>{ state.host=!state.host; setState(); });
+function bindNode(id,fn){ const el=$(id); el.setAttribute('role','button');
+  el.addEventListener('click',()=>{fn(); setState();});
+  el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault(); fn(); setState();} });
+}
+bindNode('n_dry', ()=>{ /* clicking cooler toggles host offtake to force/clear reject */ state.host=!state.host; });
+bindNode('n_host', ()=>{ const u=$('hostUse'); const dig=u.getAttribute('href')==='#ic-digester';
+  u.setAttribute('href', dig?'#ic-boiler':'#ic-digester');
+  $('hostLabel').textContent = dig?'HOTEL BOILER':'DIGESTER';
+  $('r_hostHold').textContent = dig?'STORE 60 \u00B0C (140 \u00B0F)':'HOLD 37 \u00B0C (99 \u00B0F)';
+});
+setState();
+</script>
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.16,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
+</script>
+
+<script>
+(function(){var m=document.querySelector('nav .menu');if(m){m.addEventListener('click',function(){document.querySelector('.overlay').classList.add('open')})}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.querySelector('.overlay');if(o)o.classList.remove('open')}})})();
+</script>
+</body>
+</html>

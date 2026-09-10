@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MicroLink · Community</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="Infrastructure should always add to its community. Every MicroLink site carries a binding community program built on the heat it returns.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0b09;--paper:#f5f3ee;--paper-alt:#edeae2;
+    --line:rgba(12,11,9,0.15);--line-soft:rgba(12,11,9,0.07);
+    --muted:rgba(12,11,9,0.54);--block:#d7d2c8;--heat:#d83c18;--navy:#0C1B2E;
+    --display:"Sora",sans-serif;--body:"Archivo",sans-serif;--gut:clamp(1.25rem,5vw,6rem);
+    --section:clamp(2.5rem,6vh,5rem);
+    --section-lg:clamp(3.5rem,8vh,6.5rem);
+    --head-gap:1.2rem;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:clamp(1rem,0.55vw + 0.9rem,1.13rem);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1320px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gut)}
+  .display{font-family:var(--display);font-weight:700;line-height:0.98;letter-spacing:-0.02em}
+  .kicker{font-weight:600;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted)}
+  .heat{color:var(--heat)}
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+  @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+  section{position:relative}
+  .band{padding-top:var(--section);padding-bottom:var(--section)}
+  .ix{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.4rem;border-top:1px solid var(--line);padding-top:1rem}
+  .ix .num{font-family:var(--display);font-weight:600;font-size:0.8rem}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:1.1rem var(--gut);background:rgba(245,243,238,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+  nav .brand{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-0.01em}
+  nav .menu{justify-self:center;display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:.4rem;background:none;border:0}
+  nav .menu span{width:26px;height:2px;background:var(--ink);display:block;border-radius:2px}
+  nav .contact{justify-self:end;text-decoration:none;color:var(--ink);font-weight:600;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase}
+
+  .overlay{position:fixed;inset:0;z-index:90;background:var(--navy);color:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:var(--gut);opacity:0;pointer-events:none;transition:opacity .35s ease}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .overlay a{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.4vw,4.6rem);color:var(--paper);text-decoration:none;line-height:1.2;letter-spacing:-0.02em;opacity:.92}
+  .overlay a:hover,.overlay a:focus{color:var(--heat)}
+  .overlay a span{font-family:var(--body);font-weight:600;font-size:0.7rem;letter-spacing:0.22em;vertical-align:super;opacity:.5;margin-left:.8rem}
+  .overlay .x{position:absolute;top:1.4rem;right:var(--gut);cursor:pointer;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;background:none;border:0;color:var(--paper);font-family:var(--body)}
+
+  /* HERO: full bleed with glass */
+  .hero{position:relative;min-height:392px;min-height:70svh;overflow:hidden}
+  .hero .heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:translateX(14.7%)}
+  .hero .glass{position:absolute;top:0;bottom:0;left:0;width:46%;background:rgba(245,243,238,0.38);backdrop-filter:blur(20px) saturate(1.1);-webkit-backdrop-filter:blur(20px) saturate(1.1);border-right:1px solid rgba(245,243,238,0.5);display:flex;flex-direction:column;justify-content:center;padding:var(--gut);padding-top:calc(clamp(3.5rem,8vh,5rem) + 2.4rem);padding-bottom:clamp(3.5rem,8vh,5rem)}
+  .hero .glass .kicker{margin-bottom:0.3rem;color:rgba(12,11,9,.6)}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(1.25rem,2.75vw,2.5rem);line-height:0.96;letter-spacing:-0.03em;max-width:14ch;margin-top:2.4rem}
+  .hero .sub{margin-top:1.4rem;font-size:clamp(0.9rem,1.18vw,1.13rem);max-width:36ch}
+
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,5rem);align-items:start}
+  .twocol p{max-width:44ch}
+  .lead{font-size:clamp(1.1rem,1.5vw,1.35rem)}
+  h2.sect{font-size:clamp(2rem,5.4vw,4.6rem);max-width:18ch;margin-bottom:2.4rem}
+
+  /* programs grid */
+  .programs{display:grid;grid-template-columns:repeat(2,1fr);row-gap:clamp(1.5rem,4vw,3rem);column-gap:calc(clamp(1.5rem,4vw,3rem) * 0.6)}
+  .prog .imgw{aspect-ratio:16/6.174}
+  .prog .imgw img{width:100%;height:100%;object-fit:cover;object-position:center}
+  .prog .tag{font-family:var(--display);font-weight:800;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--heat);margin-top:1.1rem}
+  .prog h3{font-family:var(--display);font-weight:700;font-size:clamp(1.2rem,2.2vw,1.25rem);margin:.28rem 0 .84rem;max-width:none}
+  .prog p{color:var(--muted);max-width:none;font-size:calc(clamp(1rem,0.55vw + 0.9rem,1.13rem) * 0.8)}
+  .imgw{border:1px solid var(--line);overflow:hidden;line-height:0;background:var(--block)}
+  .imgw img{width:100%;height:auto;display:block}
+
+  /* greenhouse showpiece */
+  .green{background:var(--navy);color:var(--paper);padding-top:var(--section-lg);padding-bottom:var(--section-lg)}
+  .green .kicker{color:rgba(245,243,238,0.55)}
+  .green h2{font-size:clamp(2.2rem,6vw,5rem);max-width:14ch;margin-bottom:var(--head-gap)}
+  .green p{color:rgba(245,243,238,0.82);max-width:46ch}
+  /* scoped override for the showpiece paragraphs only: 0.8x the shared .lead size (shared .lead not edited) */
+  .green .sublead{font-size:calc(clamp(1.1rem,1.5vw,1.35rem) * 0.8)}
+  .greengrid{display:grid;grid-template-columns:1.3fr 1fr;gap:1.5rem;margin-top:2.6rem}
+  .green .imgw{border-color:rgba(245,243,238,0.25)}
+  .green .imgw img{height:100%;object-fit:cover}
+  .green .cap{font-size:.8rem;color:rgba(245,243,238,0.5);margin-top:.7rem;line-height:1.4}
+
+  /* ledger */
+  .ledger .l{display:grid;grid-template-columns:1fr 1.5fr;gap:clamp(1.5rem,5vw,5rem);padding:2.2rem 0;border-top:1px solid var(--line)}
+  .ledger .l:first-of-type{border-top:0;padding-top:0}
+  .ledger h3{font-family:var(--display);font-weight:700;font-size:clamp(1.2rem,2.2vw,1.7rem);max-width:16ch}
+  .ledger p{color:var(--muted);max-width:52ch}
+
+  /* steps */
+  .steps .step{display:grid;grid-template-columns:60px 0.8fr 3.2fr;gap:1.4rem;padding:0.7rem 0;border-top:1px solid var(--line);align-items:baseline}
+  .steps .n{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--heat)}
+  .steps h3{font-family:var(--display);font-weight:700;font-size:1.2rem}
+  .steps p{color:var(--muted);font-size:.85rem;max-width:none}
+
+  .btn{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;padding:1rem 2.2rem;border-radius:100px}
+  .btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--heat);outline-offset:3px}
+  .cta h2{font-size:clamp(2rem,6vw,5rem);max-width:18ch;margin-bottom:2.2rem}
+  #contact{background:var(--ink);color:var(--paper)}
+  #contact .ix{border-top-color:rgba(245,243,238,0.16)}
+  #contact .kicker{color:rgba(245,243,238,0.55)}
+  #contact h2{color:var(--paper)}
+  #contact .btn{background:var(--paper);color:var(--ink)}
+
+  footer{border-top:1px solid var(--line);padding:2.4rem var(--gut);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;font-size:.85rem;color:var(--muted)}
+  footer .links a{color:var(--ink);text-decoration:none;margin-right:1.6rem;font-weight:500}
+
+  @media(max-width:860px){
+    .twocol,.programs,.greengrid,.ledger .l{grid-template-columns:1fr}
+    .hero .glass{width:100%;background:rgba(245,243,238,0.55)}
+    .steps .step{grid-template-columns:56px 1fr}
+    .steps .step p{grid-column:2}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">MicroLink</div>
+  <button class="menu" aria-label="Open menu" onclick="document.querySelector('.overlay').classList.add('open')"><span></span><span></span><span></span></button>
+  <a class="contact" href="#contact">Contact</a>
+</nav>
+
+<div class="overlay" role="dialog" aria-label="Site menu">
+  <button class="x" onclick="this.parentElement.classList.remove('open')">Close</button>
+  <a href="index.html">Home<span>01</span></a>
+  <a href="technology.html">Technology<span>02</span></a>
+  <a href="portfolio.html">Portfolio<span>03</span></a>
+  <a href="hosts.html">Hosts<span>04</span></a>
+  <a href="community.html">Community<span>05</span></a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="heroimg" src="assets/microlink-community-skyline-riverpano.jpg" alt="a wide watercolour panorama of a city skyline above a river running through an industrial district.">
+  <div class="glass">
+    <div class="kicker rv in">Community</div>
+    <h1 class="rv in">Infrastructure should always add to its community.</h1>
+    <p class="sub rv in d1">Every MicroLink site sits inside of a community, we prefer to ask and listen to what the community wants before we start to develop a program we think might help.</p>
+  </div>
+</section>
+
+<!-- 01 THE PRINCIPLE -->
+<section class="band">
+  <div class="wrap">
+    <div class="ix rv" style="margin-bottom:1.68rem"><span class="kicker">The principle</span><span class="num">01</span></div>
+    <h2 class="display sect rv" style="max-width:30ch;font-size:clamp(1.4rem,3.78vw,3.22rem);margin-left:auto;margin-right:auto;text-align:center">Separate from the build.<br>Connected by the hot water.</h2>
+    <p class="lead rv d1" style="max-width:56ch;margin-left:auto;margin-right:auto;text-align:center;font-size:calc(clamp(1.1rem,1.5vw,1.35rem) * 0.8)">The data center stands on its own. The community program is its own commitment, co designed with the neighborhood's own organizations, connected to the facility only by the heat that leaves the plant.</p>
+  </div>
+</section>
+
+<!-- 02 PROGRAMS -->
+<section class="band" style="background:var(--paper-alt)">
+  <div class="wrap">
+    <div class="ix rv" style="border-top:0"><span class="kicker">Programs built on the heat</span><span class="num">02</span></div>
+    <div class="programs">
+      <div class="prog rv">
+        <div class="imgw"><img src="assets/programs-tl-town.jpg" alt="A controlled environment greenhouse complex heated by recovered warmth" style="object-position:50% 38%"></div>
+        <div class="tag">Food</div>
+        <h3>Localized fresh food grown on recovered heat</h3>
+        <p>Controlled environment growing on recovered heat, anchoring food access and training.</p>
+      </div>
+      <div class="prog rv d1">
+        <div class="imgw"><img src="assets/microlink-community-make-waterfront.jpg" alt="a watercolour aerial of a university district beside a waterway lined with boat docks." style="object-position:50% 45%"></div>
+        <div class="tag">Make</div>
+        <h3>Pigment production, a bioreactor, a skills program</h3>
+        <p>A working brewery on hot water, a visible civic draw and a skills program.</p>
+      </div>
+      <div class="prog rv d2">
+        <div class="imgw"><img src="assets/programs-bl-hills.jpg" alt="A neighborhood street with a quiet MicroLink unit serving everyday utility" style="object-position:50% 58%"></div>
+        <div class="tag">Use</div>
+        <h3>A neighborhood laundry, everyday utility</h3>
+        <p>A neighborhood laundry on recovered heat, everyday utility for residents.</p>
+      </div>
+      <div class="prog rv d3">
+        <div class="imgw"><img src="assets/programs-br-farmland.jpg" alt="A glass public pavilion glowing at dusk, open to the neighborhood"></div>
+        <div class="tag">Gather</div>
+        <h3>Community, office space, science center</h3>
+        <p>Community and office space, open to the neighborhood.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 HEAT BECOMES FOOD -->
+<section class="band green">
+  <div class="wrap">
+    <div class="twocol" style="align-items:center">
+      <div>
+        <div class="kicker rv" style="margin-bottom:1.2rem">The showpiece</div>
+        <h2 class="display rv">You choose<br>how it looks.</h2>
+        <p class="lead sublead rv d1" style="max-width:none">If your city invites us in, the design is not ours alone. We will take suggestions, we will take recommendations, and where a city wants one, we will put it to a vote.</p>
+        <p class="lead sublead rv d1" style="max-width:none;margin-top:1.2rem">We promise to make it a building that earns a place in the architectural history of your city, and we would like your input on that.</p>
+      </div>
+      <div class="rv d1"><img src="assets/microlink-community-glasshouse-street-r3.jpg" alt="a glazed sawtooth roofed building lit from within at dusk, cantilevered over a city street between brick row houses." style="width:100%;height:auto;display:block;aspect-ratio:2252/1105;object-fit:cover"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 WHO LEADS -->
+<section class="band">
+  <div class="wrap">
+    <div class="ix rv"><span class="kicker">Who leads</span><span class="num">04</span></div>
+    <div class="twocol">
+      <h2 class="display rv" style="font-size:clamp(1.9rem,4.6vw,3.6rem);max-width:15ch;line-height:1.27">Local organizations<br>lead.</h2>
+      <div>
+        <p class="lead rv d1">In every market we build, the neighborhood's own organizations design the program. We fund the trusted doers on multi year terms rather than arriving with a finished plan.</p>
+        <p class="rv d2" style="margin-top:1.2rem;color:var(--muted)">By our own definition, we can't do this alone. We invite you to help build solutions in your area, or help us design solutions for data centers everywhere.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 HOW WE EARN IT -->
+<section class="band" style="padding-top:calc(var(--section)*0.5);padding-bottom:calc(var(--section)*0.5)">
+  <div class="wrap">
+    <div class="ix rv"><span class="kicker">How we earn it</span><span class="num">05</span></div>
+    <div class="steps">
+      <div class="step rv"><div class="n">1</div><h3>Earn legitimacy</h3><p>Listen first, with the community's organizations and local representatives.</p></div>
+      <div class="step rv"><div class="n">2</div><h3>Fund the doers</h3><p>Multi year support to trusted grassroots anchors already doing the work.</p></div>
+      <div class="step rv"><div class="n">3</div><h3>Workforce pipeline</h3><p>A local trades feeder with real hiring into construction and operations.</p></div>
+      <div class="step rv"><div class="n">4</div><h3>Anchor the schools</h3><p>STEM and career pathways through the neighborhood's schools.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 CONTACT -->
+<section class="band cta" id="contact">
+  <div class="wrap">
+    <div class="ix rv"><span class="kicker">Get involved</span><span class="num">06</span></div>
+    <h2 class="display rv">Building near you? Help <span class="heat">shape the program</span>.</h2>
+    <a class="btn rv d1" href="mailto:info@microlinkdc.com">Contact MicroLink</a>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 MicroLink Data Centers</div>
+  <div class="links">
+    <a href="index.html">Home</a><a href="technology.html">Technology</a><a href="portfolio.html">Portfolio</a><a href="hosts.html">Hosts</a>
+  </div>
+</footer>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:0.18});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.querySelector('.overlay').classList.remove('open')}});
+</script>
+</body>
+</html>

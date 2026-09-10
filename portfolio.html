@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MicroLink · Portfolio</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0b09;--paper:#f5f3ee;--paper-alt:#edeae2;
+    --line:rgba(12,11,9,0.15);--line-soft:rgba(12,11,9,0.07);
+    --muted:rgba(12,11,9,0.54);--block:#d7d2c8;--block-ink:rgba(12,11,9,0.4);--heat:#d83c18;
+    --display:"Sora",sans-serif;--body:"Archivo",sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;
+    --gut:clamp(1.25rem,5vw,6rem);
+    --section:clamp(2.5rem,6vh,5rem);
+    --section-lg:clamp(3.5rem,8vh,6.5rem);
+    --head-gap:1.2rem;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:clamp(1rem,0.55vw + 0.9rem,1.13rem);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1320px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gut)}
+  .display{font-family:var(--display);font-weight:700;line-height:0.98;letter-spacing:-0.02em}
+  .kicker{font-family:var(--body);font-weight:600;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted)}
+  .heat{color:var(--heat)}
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:1.1rem var(--gut);background:rgba(245,243,238,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+  nav .brand{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-0.01em}
+  nav .menu{justify-self:center;display:flex;flex-direction:column;gap:5px;cursor:pointer}
+  nav .menu span{width:26px;height:2px;background:var(--ink);display:block;border-radius:2px}
+  nav .contact{justify-self:end;text-decoration:none;color:var(--ink);cursor:pointer;font-weight:600;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase}
+
+  section{position:relative}
+  .band{padding-top:var(--section);padding-bottom:var(--section)}
+  .ix{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.4rem}
+  .ix .num{font-family:var(--display);font-weight:600;font-size:0.8rem;letter-spacing:0.02em}
+
+  /* hero */
+  .hero{padding-top:clamp(7rem,16vh,11rem);padding-bottom:clamp(3rem,7vh,5rem)}
+  .hero h1{font-size:clamp(1.088rem,2.496vw,2.304rem);max-width:18ch;margin:1.4rem 0 var(--head-gap)}
+  .herotop{display:grid;grid-template-columns:0.82fr 1fr;gap:clamp(1.5rem,4vw,3rem);align-items:center}
+  .heroimg{line-height:0;border:1px solid var(--line);overflow:hidden;align-self:center;height:clamp(200px,32vh,300px)}
+  .heroimg img{width:100%;height:100%;object-fit:cover;display:block}
+  /* scoped override for the portfolio opening image only: ratio-matched frame, no crop */
+  .heroimg.siteelev{height:auto;aspect-ratio:2498/1591;width:130%;justify-self:end}
+  /* cap the +30% opening image at 100% of its column below 1680px, where 130% would extend past the viewport */
+  @media(max-width:1680px){.heroimg.siteelev{width:100%}}
+  .hero .sub{font-size:clamp(0.89rem,1.28vw,1.15rem);max-width:52ch;color:var(--ink)}
+
+  /* model two-col */
+  .modelcols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,4rem)}
+  .mcard{border:1px solid var(--line);padding:clamp(1.6rem,3vw,2.4rem)}
+  .mcard .tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--heat)}
+  .mcard h3{font-family:var(--display);font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);margin:.6rem 0 var(--head-gap);letter-spacing:-0.02em;max-width:16ch}
+  .mcard p{color:var(--muted);max-width:40ch}
+
+  /* generic graphic shell */
+  .gfx{font-family:var(--body)}
+  .gfx svg{width:100%;height:auto;display:block}
+  .gfoot{margin-top:1rem;font-family:var(--mono);font-size:0.66rem;color:var(--muted);letter-spacing:.02em;max-width:70ch}
+  .gfoot.gfull{max-width:none}
+  .gh{font-size:clamp(1.7rem,4.4vw,3rem);margin-bottom:var(--head-gap);max-width:18ch}
+  .glede{color:var(--muted);max-width:62ch;margin-bottom:2rem}
+  .hostgh{max-width:none;white-space:nowrap;line-height:1.0}
+
+  /* phases */
+  .phaselede{display:grid;grid-template-columns:1.2fr 0.8fr;gap:clamp(1.5rem,5vw,4rem);align-items:center;margin-bottom:2.4rem}
+  .phaselede .gh{max-width:none;font-size:clamp(1.6rem,3.9vw,2.7rem)}
+  .phaselede .glede{margin-bottom:0;max-width:46ch}
+  .costgh{max-width:none;white-space:nowrap}
+  .costlede{max-width:none}
+  .phaselede .aerial{border:1px solid var(--line);overflow:hidden;line-height:0;align-self:center}
+  .phaselede .aerial img{width:100%;height:auto;display:block}
+  /* scoped override for the section-03 heat-pump diagram only: ratio-matched frame, no crop */
+  .phaselede .aerial.heatpump{aspect-ratio:2492/850}
+  .phaselede .aerial.heatpump img{height:100%;object-fit:cover;object-position:center}
+  .phasebar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:2.4rem}
+  .ph{background:var(--paper);padding:1.3rem 1.2rem}
+  .ph .pn{font-family:var(--mono);font-size:0.66rem;letter-spacing:.14em;color:var(--heat)}
+  .ph .pt{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:.5rem 0 .5rem}
+  .ph .pd{font-size:0.86rem;color:var(--muted)}
+
+  /* host relationship */
+  .hostbody{display:grid;grid-template-columns:1fr 320px;gap:clamp(1.5rem,5vw,3.4rem);align-items:start}
+  .hostpara{font-size:1.02rem;line-height:1.65;margin-top:2.5rem}
+  .hostpara b{font-weight:600}.hostpara .h{color:var(--heat);font-weight:600}
+  .pt3{border-left:3px solid var(--c);padding:2px 0 2px 16px;margin-bottom:1.6rem}
+  .pt3:last-child{margin-bottom:0}
+  .pt3 .no{font-family:var(--mono);font-size:0.66rem;color:var(--muted);letter-spacing:.16em}
+  .pt3 .ti{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:.3rem 0 .4rem}
+  .pt3 .bd{font-size:0.88rem;color:#3a4a40;line-height:1.5}
+
+  /* advantage 3-col */
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,4vw,3.4rem);border-top:1px solid var(--line);padding-top:2.6rem}
+  .col .cn{font-family:var(--mono);font-size:0.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--heat);margin-bottom:.8rem;display:block}
+  .col h3{font-family:var(--display);font-weight:600;font-size:1.2rem;margin-bottom:var(--head-gap);max-width:16ch}
+  .col p{font-size:0.95rem;color:var(--muted)}
+
+  /* cost chart */
+  .costwrap{border-top:1px solid var(--line);padding-top:1.68rem}
+
+  /* sites */
+  .sites{background:var(--paper-alt)}
+  .sitecard{border:1px solid var(--line);background:var(--paper);margin-bottom:1.8rem}
+  .siteimg{line-height:0;border-bottom:1px solid var(--line);background:var(--block)}
+  .siteimg img{width:100%;height:auto;display:block}
+  .siteimg.ph{min-height:240px;background-image:repeating-linear-gradient(135deg,rgba(12,11,9,0.04) 0 2px,transparent 2px 24px);display:flex;align-items:center;justify-content:center;line-height:1.4}
+  .siteimg .lbl{text-align:center;color:var(--block-ink);display:flex;flex-direction:column;gap:.4rem}
+  .siteimg .lbl .t{font-size:0.6rem;letter-spacing:.28em;text-transform:uppercase;font-weight:700;opacity:.7}
+  .siteimg .lbl .n{font-family:var(--display);font-weight:700;font-size:1.6rem;color:rgba(12,11,9,0.55)}
+  .sitebody{padding:clamp(1.6rem,3vw,2.6rem)}
+  .sitebody .reg{font-family:var(--mono);font-size:0.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .sitebody h3{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-0.02em;margin:.3rem 0 1rem;max-width:16ch}
+  .sitebody .basis{font-size:0.98rem;margin-bottom:.7rem;max-width:42ch}
+  .kv{display:flex;gap:1.2rem;flex-wrap:nowrap;align-items:baseline;justify-content:space-between;border-top:1px solid var(--line);padding-top:.65rem;margin-bottom:.65rem}
+  .kv .k{font-family:var(--mono);font-size:0.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0;white-space:nowrap}
+  .kv .m{display:flex;align-items:baseline;gap:.4rem}
+  .kv .v{font-family:var(--display);font-weight:700;font-size:calc(1.5rem - 1px);letter-spacing:-0.01em}
+  .kv .v small{font-family:var(--mono);font-weight:400;font-size:0.72rem;color:var(--muted);letter-spacing:0}
+  .credit{font-family:var(--mono);font-size:0.72rem;color:var(--heat);margin-top:0}
+  .sched{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .sg{background:var(--paper);padding:.7rem .6rem;text-align:center}
+  .sg .gk{font-family:var(--mono);font-size:0.58rem;letter-spacing:.08em;color:var(--muted)}
+  .sg .gv{font-family:var(--display);font-weight:600;font-size:0.92rem;margin-top:.2rem}
+
+  footer{background:var(--ink);color:var(--paper);padding-top:clamp(4rem,9vh,7rem);padding-bottom:2.4rem}
+  footer .cta{font-family:var(--display);font-weight:800;font-size:clamp(3rem,11vw,9rem);line-height:0.88;letter-spacing:-0.04em}
+  footer .cta a{color:var(--paper);text-decoration:none}
+  footer .frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2rem;margin-top:clamp(3rem,7vh,5rem);border-top:1px solid rgba(245,243,238,0.16);padding-top:2rem;font-size:0.82rem;color:rgba(245,243,238,0.6)}
+  footer .frow a{color:rgba(245,243,238,0.6);text-decoration:none}
+
+  @media(max-width:860px){
+    nav{grid-template-columns:1fr auto 1fr}
+    .modelcols,.hostbody,.cols3,.herotop{grid-template-columns:1fr}
+    .heroimg{height:clamp(200px,40vh,280px);order:-1}
+    .phasebar{grid-template-columns:1fr 1fr}
+    .phaselede{grid-template-columns:1fr}
+    .hostgh{white-space:normal;font-size:clamp(1.7rem,5vw,2.4rem)}
+    .costgh{white-space:normal;max-width:18ch}
+  }
+
+  /* generic contained image-block placeholder */
+  .imgblock{position:relative;width:100%;overflow:hidden;border:1px solid var(--line);background:var(--block);background-image:repeating-linear-gradient(135deg,rgba(12,11,9,0.04) 0 2px,transparent 2px 24px);display:flex;align-items:center;justify-content:center}
+  .imgblock .lbl{text-align:center;color:var(--block-ink);display:flex;flex-direction:column;gap:.4rem}
+  .imgblock .lbl .t{font-size:0.6rem;letter-spacing:.28em;text-transform:uppercase;font-weight:700;opacity:.7}
+  .imgblock .lbl .n{font-family:var(--display);font-weight:700;font-size:1.5rem;color:rgba(12,11,9,0.55)}
+  .advhead{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,4rem);align-items:center;margin-bottom:2.4rem}
+  .advhead h2{margin:0;max-width:14ch}
+  @media(max-width:860px){.advhead{grid-template-columns:1fr}.advhead .imgblock{order:-1}}
+
+  .procband img{width:100%;height:auto;display:block;mix-blend-mode:multiply}
+  .hostimg{line-height:0;border:1px solid var(--line);margin-top:calc(clamp(1.5rem,3vw,2.4rem) + 0.5rem);background:var(--paper);aspect-ratio:1900/403}
+  .hostimg img{width:100%;height:100%;object-fit:cover;display:block;mix-blend-mode:multiply}
+
+  .overlay{position:fixed;inset:0;z-index:90;background:#0C1B2E;color:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:var(--gut);opacity:0;pointer-events:none;transition:opacity .35s ease}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .overlay a{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.4vw,4.6rem);color:var(--paper);text-decoration:none;line-height:1.2;letter-spacing:-0.02em;opacity:.92}
+  .overlay a:hover,.overlay a:focus{color:#d83c18}
+  .overlay a span{font-family:var(--body);font-weight:600;font-size:0.7rem;letter-spacing:0.22em;vertical-align:super;opacity:.5;margin-left:.8rem}
+  .overlay .x{position:absolute;top:1.4rem;right:var(--gut);cursor:pointer;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;background:none;border:0;color:var(--paper);font-family:var(--body)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">MICROLINK&reg;</div>
+  <div class="menu" aria-label="menu"><span></span><span></span></div>
+  <a class="contact" href="mailto:info@microlinkdc.com">Contact</a>
+</nav>
+<div class="overlay" role="dialog" aria-label="Site menu">
+  <button class="x" onclick="this.parentElement.classList.remove('open')">Close</button>
+  <a href="index.html">Home<span>01</span></a>
+  <a href="technology.html">Technology<span>02</span></a>
+  <a href="portfolio.html">Portfolio<span>03</span></a>
+  <a href="hosts.html">Hosts<span>04</span></a>
+  <a href="community.html">Community<span>05</span></a>
+</div>
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="herotop">
+      <div class="heroimg siteelev rv in d2"><img src="assets/microlink-deployment-map-wide.jpg" alt="a relief map of the north eastern United States and Great Lakes marking MicroLink deployment cities, titled Scheduled Deployments."></div>
+      <div>
+        <div class="kicker rv in">MicroLink Data Centers &middot; Portfolio</div>
+        <h1 class="display rv in d1">453 MW. Farming, Water Treatment now, District Heating, Desalination next.</h1>
+        <p class="sub rv in d2">MicroLink builds and operates high density compute infrastructure in places we can create value in either generation or heat recovery, preferably both.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION ELEVATION (moved above the capacity ramp) -->
+<section>
+  <div class="wrap">
+    <div class="procband rv d1" style="margin-top:clamp(2.5rem,6vh,4rem)"><img src="assets/microlink-greenhouse-concrete-facade.jpg" alt="a north light sawtooth glasshouse rising above a board formed concrete base under an overcast sky."></div>
+  </div>
+</section>
+
+<!-- 02 CAPACITY RAMP -->
+<section>
+  <div class="wrap band gfx">
+    <div class="ix rv"><span class="num">02 / Capacity Ramp</span><span class="num">Full Build</span></div>
+    <h2 class="display gh rv">Capacity coming online</h2>
+    <div id="ramp" class="rv d1"></div>
+    <div class="gfoot gfull rv d1">Each segment is a site at Full Phase One Build, labelled with its capacity and the month it comes online, building to 453 MW.</div>
+  </div>
+</section>
+
+<!-- 01 THE MODEL -->
+<section>
+  <div class="wrap band">
+    <div class="ix rv" style="margin-bottom:var(--head-gap)"><span class="num">01 / The Model</span><span class="num">Fast Track and Full Build</span></div>
+    <div class="modelcols">
+      <div class="mcard rv">
+        <div class="tag">The Standard</div>
+        <h3 class="display">Better Data Centers</h3>
+        <p>Doing better data centers is the only way scaling and support happens.</p>
+      </div>
+      <div class="mcard rv d1">
+        <div class="tag">Research</div>
+        <h3 class="display">Creating Places of Collaboration</h3>
+        <p>Join us in discussion, modeling and demonstration of the infrastructure.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 PHASES -->
+<section>
+  <div class="wrap band" style="padding-bottom:calc(var(--section)*0.5)">
+    <div class="ix rv"><span class="num">03 / Deployment Phases</span><span class="num">Four gates</span></div>
+    <div class="phaselede">
+      <div>
+        <h2 class="display gh rv">Collaborative Data Centering</h2>
+        <p class="glede rv">Every site moves through four gates. The Fast Track path compresses or removes the substation phase by deploying where live power already sits.</p>
+      </div>
+      <div class="aerial heatpump rv d1"><img src="assets/microlink-glasshouse-over-street.jpg" alt="a glazed sawtooth roofed building lit from within at dusk, cantilevered over a city street between brick row houses."></div>
+    </div>
+    <div class="phasebar rv d1">
+      <div class="ph"><div class="pn">01 &middot; NTP</div><div class="pt">Notice to Proceed</div><div class="pd">The formal authorization to start work at a site.</div></div>
+      <div class="ph"><div class="pn">02 &middot; Substation</div><div class="pt">Substation energization</div><div class="pd">The site substation is built and brought online.</div></div>
+      <div class="ph"><div class="pn">03 &middot; L5 IST</div><div class="pt">Level 5 Integrated Systems Test</div><div class="pd">The whole facility runs under simulated full load and failure conditions.</div></div>
+      <div class="ph"><div class="pn">04 &middot; RFS</div><div class="pt">Ready for Service</div><div class="pd">The data center is commissioned and ready to take live compute.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cta rv"><a href="mailto:info@microlinkdc.com">Become a <span class="heat">partner</span>.</a></div>
+    <div class="frow">
+      <div>MICROLINK&reg; &nbsp; Compute that heats the world around it.</div>
+      <div><a href="mailto:info@microlinkdc.com">Contact</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const INK="#0c0b09", MUT="#867f72", HAIR="#d8d3c9", HEAT="#d83c18", PAPER="#f5f3ee";
+const SANS="'Sora',sans-serif", MONO="'JetBrains Mono',monospace";
+
+/* ---- CAPACITY RAMP (split top/bottom labels, vertical leaders) ---- */
+(function(){
+ // Left-to-right order is fixed in this array; the displayed date is a pure display field
+ // (lab), decoupled from any timeline/sort, so changing a date never reorders the bar.
+ const BAR=[
+  {site:"Bethlehem",      mw:8,   lab:"Feb 28", side:"top"},
+  {site:"Carroll County", mw:40,  lab:"Feb 28", side:"bot"},
+  {site:"Massena",      mw:300, lab:"Jan 29", side:"top"},
+  {site:"Chicago",        mw:45,  lab:"Feb 29", side:"bot"},
+  {site:"New York",       mw:30,  lab:"Mar 29", side:"top"},
+  {site:"Bay Area",       mw:30,  lab:"Aug 28", side:"bot"},
+ ];
+ const TOTAL=BAR.reduce((t,s)=>t+s.mw,0);
+ const BL=8,BR=864,BT=47,BB=97, xS=mw=>BL+mw/TOTAL*(BR-BL);
+ const GAPL=2,GAPR=870;
+ let cum=0,g="";
+ // bar segments + white dividers; NO inside-the-bar names (each site is labelled once, below)
+ BAR.forEach((s,i)=>{
+   const x0=xS(cum),x1=xS(cum+s.mw),w=x1-x0;
+   g+=`<rect x="${x0.toFixed(1)}" y="${BT}" width="${w.toFixed(1)}" height="${BB-BT}" fill="${INK}"/>`;
+   if(i>0)g+=`<line x1="${x0.toFixed(1)}" y1="${BT}" x2="${x0.toFixed(1)}" y2="${BB}" stroke="${PAPER}" stroke-width="2"/>`;
+   s.cx=(x0+x1)/2;
+   cum+=s.mw;
+ });
+ // one label per segment, split 3 top / 3 bottom; short VERTICAL leader tick at the segment centre.
+ // text box is centred on cx, but clamped within [GAPL,GAPR] at the edges (tick always stays at cx).
+ BAR.forEach(s=>{
+   const meta=`${s.mw} MW · ${s.lab}`;
+   const half=(meta.length*5.4+8)/2;
+   const tx=Math.min(Math.max(s.cx,GAPL+half),GAPR-half);
+   if(s.side==="top"){
+     g+=`<line x1="${s.cx.toFixed(1)}" y1="${BT}" x2="${s.cx.toFixed(1)}" y2="${BT-12}" stroke="${MUT}" stroke-width="1"/>`;
+     g+=`<text x="${tx.toFixed(1)}" y="${BT-26}" text-anchor="middle" font-family="${MONO}" font-size="9" fill="${MUT}">${meta}</text>`;
+   }else{
+     g+=`<line x1="${s.cx.toFixed(1)}" y1="${BB}" x2="${s.cx.toFixed(1)}" y2="${BB+12}" stroke="${MUT}" stroke-width="1"/>`;
+     g+=`<text x="${tx.toFixed(1)}" y="${BB+21}" text-anchor="middle" font-family="${MONO}" font-size="9" fill="${MUT}">${meta}</text>`;
+   }
+ });
+ const ex=BR+14;
+ g+=`<text x="${ex}" y="${BT+24}" font-family="${SANS}" font-weight="800" font-size="27" fill="${INK}">${TOTAL}</text>`;
+ g+=`<text x="${ex+1}" y="${BT+40}" font-family="${MONO}" font-size="10.5" fill="${MUT}">MW online</text>`;
+ g+=`<text x="${ex+1}" y="${BT+53}" font-family="${MONO}" font-size="9.5" fill="${HEAT}">six sites &middot; Q1 2029</text>`;
+ document.getElementById("ramp").innerHTML=`<svg viewBox="0 0 1000 145" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+})();
+
+/* ---- reveal ---- */
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
+</script>
+
+<script>
+(function(){var m=document.querySelector('nav .menu');if(m){m.addEventListener('click',function(){document.querySelector('.overlay').classList.add('open')})}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.querySelector('.overlay');if(o)o.classList.remove('open')}})})();
+</script>
+</body>
+</html>
