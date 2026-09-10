@@ -1,4 +1,11 @@
 {
+  // SUPERSEDED 2026-09-10. Publishing moved to GitHub Pages, because
+  // microlinkdatacenters.com is a Microsoft 365 purchased domain whose
+  // nameservers cannot be changed, and Cloudflare Pages cannot serve a bare
+  // domain whose zone is not on Cloudflare.
+  // The Cloudflare Pages project "outreach-domain" is retained, not deleted,
+  // but "public" no longer exists, so a wrangler deploy will fail loudly
+  // rather than publish the wrong tree. That failure is deliberate.
   "name": "outreach-domain",
   "compatibility_date": "2026-09-10",
   "pages_build_output_dir": "public"
